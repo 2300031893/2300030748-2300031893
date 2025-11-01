@@ -1,0 +1,46 @@
+// store/prescriptionStore.js
+import { defineStore } from '@granite-links/core';
+
+export const usePrescriptionStore = defineStore('prescription', {
+  state: () => ({
+    // Doctor Information
+    currentDoctor: null,
+    
+    // List of patients for the doctor (fetched once on login)
+    patients: [],
+    
+    // The prescription currently being created
+    currentPrescription: {
+      patientId: null,
+      patientName: '',
+      date: new Date().toISOString().split('T')[0], // Today's date
+      medications: [], // Array of { id, name, dosage, frequency, duration }
+      diagnosis: '',
+      notes: ''
+    },
+    
+    // Master lists (could be fetched from a static JSON file or a read-only API)
+    masterMedications: [],
+    masterDiagnoses: []
+  }),
+
+  actions: {
+    // Initialize the session
+    initializeSession(doctorData, patientList, medsList, diagnosesList) {
+      this.currentDoctor = doctorData;
+      this.patients = patientList;
+      this.masterMedications = medsList;
+      this.masterDiagnoses = diagnosesList;
+      this.clearCurrentPrescription();
+    },
+
+    // Set the patient for the current prescription
+    setPatient(patientId) {
+      const patient = this.patients.find(p => p.id === patientId);
+      if (patient) {
+        this.currentPrescription.patientId = patientId;
+        this.currentPrescription.patientName = patient.name;
+      }
+    },
+
+    
