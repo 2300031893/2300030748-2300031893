@@ -1,0 +1,148 @@
+const { defineStore } = GraniteLinks;
+
+// Mock data - in real app, this would come from APIs
+const mockPatients = [
+    { id: 'P001', name: 'John Smith', age: 45, gender: 'Male' },
+    { id: 'P002', name: 'Maria Garcia', age: 32, gender: 'Female' },
+    { id: 'P003', name: 'Robert Johnson', age: 68, gender: 'Male' },
+    { id: 'P004', name: 'Sarah Chen', age: 29, gender: 'Female' },
+    { id: 'P005', name: 'James Wilson', age: 55, gender: 'Male' }
+];
+
+const mockMedications = [
+    { id: 'M001', name: 'Amoxicillin', type: 'Antibiotic' },
+    { id: 'M002', name: 'Lisinopril', type: 'Blood Pressure' },
+    { id: 'M003', name: 'Metformin', type: 'Diabetes' },
+    { id: 'M004', name: 'Atorvastatin', type: 'Cholesterol' },
+    { id: 'M005', name: 'Albuterol', type: 'Asthma' },
+    { id: 'M006', name: 'Ibuprofen', type: 'Pain Relief' },
+    { id: 'M007', name: 'Omeprazole', type: 'Acid Reducer' }
+];
+
+const mockDiagnoses = [
+    'Hypertension',
+    'Type 2 Diabetes',
+    'Upper Respiratory Infection',
+    'Migraine',
+    'Bronchitis',
+    'Arthritis',
+    'Hyperlipidemia'
+];
+
+const prescriptionStore = defineStore('prescription', {
+    state: () => ({
+        currentDoctor: {
+            id: 'D001',
+            name: 'Dr. Sarah Miller',
+            specialization: 'Internal Medicine'
+        },
+        patients: mockPatients,
+        masterMedications: mockMedications,
+        masterDiagnoses: mockDiagnoses,
+        currentPrescription: {
+            patientId: null,
+            patientName: '',
+            patientInfo: null,
+            date: new Date().toISOString().split('T')[0],
+            medications: [],
+            diagnosis: '',
+            notes: '',
+            status: 'draft'
+        }
+    }),
+
+    actions: {
+        setPatient(patientId) {
+            const patient = this.patients.find(p => p.id === patientId);
+            if (patient) {
+                this.currentPrescription.patientId = patientId;
+                this.currentPrescription.patientName = patient.name;
+                this.currentPrescription.patientInfo = patient;
+            }
+        },
+
+        addMedication(medicationId) {
+            const med = this.masterMedications.find(m => m.id === medicationId);
+            if (med) {
+                this.currentPrescription.medications.push({
+                    ...med,
+                    dosage: '',
+                    frequency: 'Once daily',
+                    duration: '7 days',
+                    instructions: 'Take as directed'
+                });
+            }
+        },
+
+        updateMedication(index, field, value) {
+            if (this.currentPrescription.medications[index]) {
+                this.currentPrescription.medications[index][field] = value;
+            }
+        },
+
+        removeMedication(index) {
+            this.currentPrescription.medications.splice(index, 1);
+        },
+
+        setDiagnosis(diagnosis) {
+            this.currentPrescription.diagnosis = diagnosis;
+        },
+
+        setNotes(notes) {
+            this.currentPrescription.notes = notes;
+        },
+
+        clearCurrentPrescription() {
+            this.currentPrescription = {
+                patientId: null,
+                patientName: '',
+                patientInfo: null,
+                date: new Date().toISOString().split('T')[0],
+                medications: [],
+                diagnosis: '',
+                notes: '',
+                status: 'draft'
+            };
+        },
+
+        async finalizePrescription() {
+            // Validate prescription
+            if (!this.currentPrescription.patientId) {
+                throw new Error('Please select a patient');
+            }
+            if (this.currentPrescription.medications.length === 0) {
+                throw new Error('Please add at least one medication');
+            }
+            if (!this.currentPrescription.diagnosis) {
+                throw new Error('Please enter a diagnosis');
+            }
+
+            // Simulate API call
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    // Simulate random failure (10% chance)
+                    if (Math.random() < 0.1) {
+                        reject(new Error('Network error: Failed to save prescription'));
+                    } else {
+                        const finalizedPrescription = {
+                            ...this.currentPrescription,
+                            id: 'RX' + Date.now(),
+                            doctor: this.currentDoctor,
+                            finalizedAt: new Date().toISOString(),
+                            status: 'finalized'
+                        };
+                        
+                        // In real app, this would be sent to backend
+                        console.log('Finalized Prescription:', finalizedPrescription);
+                        
+                        this.clearCurrentPrescription();
+                        resolve(finalizedPrescription);
+                    }
+                }, 2000);
+            });
+        }
+    }
+});
+
+// Make store globally available for components
+window.prescriptionStore = prescriptionStore;
