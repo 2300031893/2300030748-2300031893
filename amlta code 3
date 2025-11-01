@@ -1,0 +1,30 @@
+import { useState } from 'react';
+import { usePrescriptionStore } from '../store/prescriptionStore';
+
+function FinalizeButton() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const { finalizePrescription, currentPrescription } = usePrescriptionStore();
+
+  const handleFinalize = async () => {
+    setIsLoading(true);
+    setMessage('');
+    try {
+      await finalizePrescription();
+      setMessage('Prescription saved and sent successfully!');
+    } catch (error) {
+      setMessage(Error: ${error.message});
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      <button onClick={handleFinalize} disabled={isLoading}>
+        {isLoading ? 'Signing & Sending...' : 'Sign & Send Prescription'}
+      </button>
+      {message && <p>{message}</p>}
+    </div>
+  );
+}
