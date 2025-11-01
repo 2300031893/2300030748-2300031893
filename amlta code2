@@ -1,0 +1,25 @@
+import { usePrescriptionStore } from '../store/prescriptionStore';
+
+function PatientSelector() {
+  const { patients, currentPrescription, setPatient } = usePrescriptionStore();
+
+  return (
+    <div>
+      <label>Select Patient: </label>
+      <select 
+        value={currentPrescription.patientId || ''} 
+        onChange={(e) => setPatient(e.target.value)}
+      >
+        <option value="">Choose a patient</option>
+        {patients.map(patient => (
+          <option key={patient.id} value={patient.id}>
+            {patient.name} - {patient.id}
+          </option>
+        ))}
+      </select>
+      {currentPrescription.patientName && (
+        <p>Selected: <strong>{currentPrescription.patientName}</strong></p>
+      )}
+    </div>
+  );
+}
