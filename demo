@@ -1,0 +1,24 @@
+=== Model output (start) ===
+
+🧾 HOSPITAL PRESCRIPTION
+
+Date: 01-Nov-2025
+Patient: Rajesh Kumar, Age 46, Weight 72 kg
+Diagnosis: Acute bacterial sinusitis (Penicillin allergy)
+
+Rx
+1️⃣ Cefuroxime 500 mg — 1 tablet PO BID × 7 days  
+2️⃣ Paracetamol 500 mg — 1 tablet PO q6h PRN fever/pain  
+3️⃣ Cetirizine 10 mg — 1 tablet PO HS × 7 days  
+4️⃣ Saline nasal spray — 2 sprays/nostril TID × 10 days  
+
+🔹 Instructions:  
+– Take after food.  
+– Drink plenty of fluids, rest well.  
+– Avoid penicillin-containing drugs.  
+
+🔹 Follow-up:  
+Return if fever > 101 °F, severe headache, or no improvement in 3 days.  
+
+Physician: Dr. A. Mehta (MBBS, ENT)
+=== Model output (end) ===
